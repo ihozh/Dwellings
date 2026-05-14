@@ -9,16 +9,17 @@ npm install
 npm run dev
 ```
 
-## Cloudflare Pages 部署
+## Cloudflare 部署
 
-构建设置：
+Cloudflare Workers + Static Assets 构建设置：
 
 ```text
 Build command: npm run build
-Build output directory: dist
+Deploy command: npx wrangler deploy
+Non-production branch deploy command: npx wrangler versions upload
 ```
 
-网页运行所需的静态资源放在 `public/` 下。`Blender/`、`material/`、`node_modules/`、`dist/` 等本地素材和构建目录不会上传到 GitHub。
+`wrangler.jsonc` 会把 `dist/` 作为静态网站资源目录。网页运行所需的静态资源放在 `public/` 下。`Blender/`、`material/`、`node_modules/`、`dist/` 等本地素材和构建目录不会上传到 GitHub。
 
 ## 数据范围
 

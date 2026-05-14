@@ -1398,10 +1398,15 @@ function resize() {
   renderer.setSize(rect.width, rect.height, false);
   camera.aspect = rect.width / rect.height;
   insideCamera.aspect = camera.aspect;
-  const isCompactLandscape = rect.width < 720 && rect.height < 380;
-  if (isCompactLandscape) {
-    root.position.set(-0.55, -0.2, 0);
-    root.scale.setScalar(0.68);
+  const isPhoneStage = rect.width < 900 && rect.height < 520;
+  const compactness = isPhoneStage ? THREE.MathUtils.clamp((460 - rect.height) / 180, 0, 1) : 0;
+  if (isPhoneStage) {
+    root.position.set(
+      THREE.MathUtils.lerp(0.28, -0.75, compactness),
+      THREE.MathUtils.lerp(-0.52, -0.1, compactness),
+      0
+    );
+    root.scale.setScalar(THREE.MathUtils.lerp(0.78, 0.62, compactness));
   } else if (rect.width < 720) {
     root.position.set(0.95, -0.72, 0);
     root.scale.setScalar(0.78);
@@ -1410,8 +1415,12 @@ function resize() {
     root.scale.setScalar(1);
   }
   if (current !== 0) {
-    if (isCompactLandscape) {
-      camera.position.set(10.8, 7.1, 15.2);
+    if (isPhoneStage) {
+      camera.position.set(
+        THREE.MathUtils.lerp(9.5, 11.4, compactness),
+        THREE.MathUtils.lerp(6.4, 7.5, compactness),
+        THREE.MathUtils.lerp(13.4, 16.2, compactness)
+      );
     } else if (rect.width < 720) {
       camera.position.set(9.5, 6.4, 13.4);
     } else {
@@ -1436,7 +1445,8 @@ function animate() {
       updateInsideCamera();
     } else {
       const stageRect = canvas.parentElement.getBoundingClientRect();
-      const isCompactLandscape = stageRect.width < 720 && stageRect.height < 380;
+      const isPhoneStage = stageRect.width < 900 && stageRect.height < 520;
+      const compactness = isPhoneStage ? THREE.MathUtils.clamp((460 - stageRect.height) / 180, 0, 1) : 0;
       const isMobile = stageRect.width < 720;
       const allowOrbit = revealTarget > 0.5 && eased > 0.96;
       controls.enabled = allowOrbit;
@@ -1449,8 +1459,13 @@ function animate() {
         controls.target.copy(laidCameraTarget);
         controls.update();
       } else {
+        compactFrontCameraPosition.set(
+          THREE.MathUtils.lerp(-0.8, -2.2, compactness),
+          THREE.MathUtils.lerp(2.68, 2.9, compactness),
+          THREE.MathUtils.lerp(11.2, 13.4, compactness)
+        );
         activeCameraPosition.lerpVectors(
-          isCompactLandscape ? compactFrontCameraPosition : isMobile ? mobileFrontCameraPosition : frontCameraPosition,
+          isPhoneStage ? compactFrontCameraPosition : isMobile ? mobileFrontCameraPosition : frontCameraPosition,
           isMobile ? mobileLaidCameraPosition : laidCameraPosition,
           eased
         );
