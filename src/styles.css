@@ -1397,21 +1397,75 @@ button {
 }
 
 @media (max-width: 820px) and (orientation: portrait) {
-  body::before {
-    content: "请横屏浏览";
+  body {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .shell {
     position: fixed;
-    z-index: 99;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    padding: 28px;
-    background:
-      linear-gradient(rgba(239, 233, 220, 0.92), rgba(239, 233, 220, 0.92)),
-      radial-gradient(circle at 50% 38%, rgba(143, 58, 45, 0.16), transparent 34%);
-    color: #332823;
-    font-size: 22px;
-    font-weight: 800;
-    text-align: center;
+    top: 50%;
+    left: 50%;
+    grid-template-columns: 164px minmax(0, 1fr);
+    grid-template-rows: 48px minmax(0, 1fr);
+    gap: 8px;
+    width: 100vh;
+    width: 100dvh;
+    height: 100vw;
+    min-height: 0;
+    padding: max(8px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom));
+    transform: translate(-50%, -50%) rotate(90deg);
+    transform-origin: center;
+  }
+
+  .topbar {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    order: 0;
+  }
+
+  .catalog {
+    grid-column: 1;
+    grid-row: 2;
+    order: 0;
+    max-height: none;
+  }
+
+  .workspace {
+    grid-column: 2;
+    grid-row: 2;
+    order: 0;
+    min-height: 0;
+  }
+
+  .stamp-grid {
+    grid-template-columns: 1fr;
+    overflow: auto;
+  }
+
+  .stage-card {
+    display: block;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .stage-card #scene {
+    padding-right: 0;
+  }
+
+  .inspector {
+    position: absolute;
+    width: clamp(188px, 29vw, 228px);
+    margin: 0;
+    pointer-events: none;
+  }
+
+  .profile-panel,
+  .map-panel,
+  .textbook-panel {
+    pointer-events: auto;
   }
 }
 
