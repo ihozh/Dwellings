@@ -260,6 +260,7 @@ const frontCameraTarget = new THREE.Vector3(0, 2.8, 0);
 const laidCameraPosition = new THREE.Vector3(6.6, 5.2, 9.4);
 const laidCameraTarget = new THREE.Vector3(yurtStageCenter.x, 1.78, yurtStageCenter.z - 0.3);
 const mobileFrontCameraPosition = new THREE.Vector3(0, 2.65, 10.8);
+const compactFrontCameraPosition = new THREE.Vector3(-1.7, 2.8, 12.6);
 const mobileLaidCameraPosition = new THREE.Vector3(7.8, 6.0, 12.4);
 const activeCameraPosition = new THREE.Vector3();
 const activeCameraTarget = new THREE.Vector3();
@@ -1397,7 +1398,11 @@ function resize() {
   renderer.setSize(rect.width, rect.height, false);
   camera.aspect = rect.width / rect.height;
   insideCamera.aspect = camera.aspect;
-  if (rect.width < 720) {
+  const isCompactLandscape = rect.width < 720 && rect.height < 380;
+  if (isCompactLandscape) {
+    root.position.set(-0.55, -0.2, 0);
+    root.scale.setScalar(0.68);
+  } else if (rect.width < 720) {
     root.position.set(0.95, -0.72, 0);
     root.scale.setScalar(0.78);
   } else {
@@ -1405,7 +1410,9 @@ function resize() {
     root.scale.setScalar(1);
   }
   if (current !== 0) {
-    if (rect.width < 720) {
+    if (isCompactLandscape) {
+      camera.position.set(10.8, 7.1, 15.2);
+    } else if (rect.width < 720) {
       camera.position.set(9.5, 6.4, 13.4);
     } else {
       camera.position.set(8, 6, 11);
@@ -1428,7 +1435,9 @@ function animate() {
     if (yurtInsideProgress > 0.01) {
       updateInsideCamera();
     } else {
-      const isMobile = canvas.parentElement.getBoundingClientRect().width < 720;
+      const stageRect = canvas.parentElement.getBoundingClientRect();
+      const isCompactLandscape = stageRect.width < 720 && stageRect.height < 380;
+      const isMobile = stageRect.width < 720;
       const allowOrbit = revealTarget > 0.5 && eased > 0.96;
       controls.enabled = allowOrbit;
       controls.object = camera;
@@ -1441,7 +1450,7 @@ function animate() {
         controls.update();
       } else {
         activeCameraPosition.lerpVectors(
-          isMobile ? mobileFrontCameraPosition : frontCameraPosition,
+          isCompactLandscape ? compactFrontCameraPosition : isMobile ? mobileFrontCameraPosition : frontCameraPosition,
           isMobile ? mobileLaidCameraPosition : laidCameraPosition,
           eased
         );
