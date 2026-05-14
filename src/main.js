@@ -620,6 +620,15 @@ function setYurtInsideView(value) {
   stageCard.classList.toggle('is-yurt-inside', yurtInsideView);
 }
 
+function getCanvasMetrics() {
+  return {
+    width: canvas.clientWidth || canvas.parentElement.clientWidth || 1,
+    height: canvas.clientHeight || canvas.parentElement.clientHeight || 1,
+    left: canvas.offsetLeft,
+    top: canvas.offsetTop
+  };
+}
+
 function setProjectedHotspot(element, worldPosition, visible, fallback = null) {
   if (!visible) {
     element.style.opacity = '';
@@ -633,8 +642,7 @@ function setProjectedHotspot(element, worldPosition, visible, fallback = null) {
     element.style.pointerEvents = '';
     return;
   }
-  const stageRect = stageCard.getBoundingClientRect();
-  const rect = canvas.getBoundingClientRect();
+  const rect = getCanvasMetrics();
   const projected = worldPosition.clone().project(activeRenderCamera);
   let localX = (projected.x * 0.5 + 0.5) * rect.width;
   let localY = (-projected.y * 0.5 + 0.5) * rect.height;
@@ -642,8 +650,8 @@ function setProjectedHotspot(element, worldPosition, visible, fallback = null) {
     localX = rect.width * fallback.x;
     localY = rect.height * fallback.y;
   }
-  const x = rect.left - stageRect.left + localX;
-  const y = rect.top - stageRect.top + localY;
+  const x = rect.left + localX;
+  const y = rect.top + localY;
   element.style.left = `${x}px`;
   element.style.top = `${y}px`;
   element.style.opacity = '1';
@@ -656,10 +664,9 @@ function setStageHotspot(element, visible, xPercent, yPercent) {
     element.style.pointerEvents = '';
     return;
   }
-  const stageRect = stageCard.getBoundingClientRect();
-  const rect = canvas.getBoundingClientRect();
-  element.style.left = `${rect.left - stageRect.left + rect.width * xPercent}px`;
-  element.style.top = `${rect.top - stageRect.top + rect.height * yPercent}px`;
+  const rect = getCanvasMetrics();
+  element.style.left = `${rect.left + rect.width * xPercent}px`;
+  element.style.top = `${rect.top + rect.height * yPercent}px`;
   element.style.opacity = '1';
   element.style.pointerEvents = 'auto';
 }
@@ -1394,7 +1401,7 @@ document.querySelector('#copySpec')?.addEventListener('click', async () => {
 });
 
 function resize() {
-  const rect = canvas.parentElement.getBoundingClientRect();
+  const rect = getCanvasMetrics();
   renderer.setSize(rect.width, rect.height, false);
   camera.aspect = rect.width / rect.height;
   insideCamera.aspect = camera.aspect;
@@ -1444,7 +1451,7 @@ function animate() {
     if (yurtInsideProgress > 0.01) {
       updateInsideCamera();
     } else {
-      const stageRect = canvas.parentElement.getBoundingClientRect();
+      const stageRect = getCanvasMetrics();
       const isPhoneStage = stageRect.width < 900 && stageRect.height < 520;
       const compactness = isPhoneStage ? THREE.MathUtils.clamp((460 - stageRect.height) / 180, 0, 1) : 0;
       const isMobile = stageRect.width < 720;
@@ -1526,6 +1533,8 @@ function animate() {
 }
 
 window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', resize);
+new ResizeObserver(resize).observe(stageCard);
 setActive(0);
 loadChinaMap();
 resize();
