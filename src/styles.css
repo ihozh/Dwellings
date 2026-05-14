@@ -1801,3 +1801,62 @@ button {
     width: clamp(122px, 24dvh, 168px);
   }
 }
+
+@media (max-width: 940px) and (orientation: landscape), (max-width: 820px) and (orientation: portrait) {
+  .stamp-hotspot {
+    width: clamp(64px, 17vh, 74px);
+    height: clamp(64px, 17vh, 74px);
+  }
+
+  .yurt-shell-hotspot,
+  .yurt-door-hotspot {
+    width: clamp(58px, 15vh, 66px);
+    height: clamp(58px, 15vh, 66px);
+  }
+
+  .knowledge-hotspot {
+    width: clamp(44px, 12vh, 52px);
+    height: clamp(44px, 12vh, 52px);
+  }
+
+  .interior-knowledge-hotspot {
+    width: clamp(40px, 11vh, 48px);
+    height: clamp(40px, 11vh, 48px);
+  }
+
+  .stamp-hotspot::before,
+  .yurt-shell-hotspot::before,
+  .yurt-door-hotspot::before,
+  .knowledge-hotspot::before,
+  .interior-knowledge-hotspot::before {
+    border-width: 1.5px;
+  }
+
+  .stamp-hotspot::after {
+    inset: 12px;
+    border-width: 2px;
+  }
+
+  .yurt-shell-hotspot::after,
+  .yurt-door-hotspot::after,
+  .knowledge-hotspot::after,
+  .interior-knowledge-hotspot::after,
+  .blue-knowledge-hotspot::after {
+    inset: 10px;
+    border-width: 1.5px;
+  }
+
+  .stamp-hotspot span {
+    inset: clamp(23px, 6.2vh, 27px);
+  }
+
+  .yurt-shell-hotspot span,
+  .yurt-door-hotspot span {
+    inset: clamp(21px, 5.6vh, 24px);
+  }
+
+  .blue-knowledge-hotspot span,
+  .interior-knowledge-hotspot.blue-knowledge-hotspot span {
+    inset: clamp(16px, 4.5vh, 19px);
+  }
+}

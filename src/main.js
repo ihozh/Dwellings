@@ -1492,7 +1492,11 @@ function animate() {
     stampArtwork.position.lerpVectors(stampArtwork.userData.verticalPosition, stampArtwork.userData.flatPosition, eased);
     stampArtwork.rotation.x = THREE.MathUtils.lerp(0, -Math.PI / 2, eased);
     stampArtwork.rotation.z = THREE.MathUtils.lerp(0, -0.025, eased);
-    stampArtwork.scale.setScalar(THREE.MathUtils.lerp(1, 1.08, eased));
+    const stampStageRect = getCanvasMetrics();
+    const stampPhoneScale = stampStageRect.width < 900 && stampStageRect.height < 520
+      ? THREE.MathUtils.lerp(1.18, 1.28, THREE.MathUtils.clamp((460 - stampStageRect.height) / 180, 0, 1))
+      : 1;
+    stampArtwork.scale.setScalar(THREE.MathUtils.lerp(1, 1.08, eased) * stampPhoneScale);
     const stampOpacity = 1 - Math.max(0, Math.min(1, (eased - 0.36) / 0.28));
     stampArtwork.userData.stampMesh.material.opacity = stampOpacity;
   }
