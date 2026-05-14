@@ -285,6 +285,8 @@ const yurtStoveInteriorWorld = new THREE.Vector3();
 const yurtDaybedInteriorWorld = new THREE.Vector3();
 const yurtBaganaInteriorWorld = new THREE.Vector3();
 const yurtShrineInteriorWorld = new THREE.Vector3();
+const yurtShellHotspotWorld = new THREE.Vector3();
+const yurtShellHotspotLocal = new THREE.Vector3(-0.08, 0.08, 0.2);
 const yurtToonoKnowledgeLocal = new THREE.Vector3(-0.1, 0.23, -0.14);
 const yurtDomeKnowledgeLocal = new THREE.Vector3(0.2, 0.06, 0.26);
 const yurtDoorKnowledgeLocal = new THREE.Vector3(0.455, -0.105, 0.0);
@@ -576,12 +578,6 @@ function loadYurtAsset() {
     yurtAsset.userData.doorHotspotObject = doorHotspotObject;
     yurtAsset.userData.stoveObject = stoveObject;
     yurtAsset.userData.floorY = settledBox.min.y;
-    const hotspotBox = new THREE.Box3().setFromObject(yurtAsset);
-    yurtAsset.userData.hotspotWorld = new THREE.Vector3(
-      (hotspotBox.min.x + hotspotBox.max.x) / 2,
-      hotspotBox.max.y,
-      (hotspotBox.min.z + hotspotBox.max.z) / 2
-    );
     model.add(yurtAsset);
   });
 }
@@ -676,15 +672,19 @@ function updateYurtHotspots(yurtOpacity) {
   const canShowKnowledgeHotspots = canShowHotspots && !yurtShellTransparent && yurtOpacity > 0.96 && !!yurtAsset?.userData.loadedModel;
   const canShowShellKnowledgeHotspots = canShowHotspots && yurtShellTransparent && yurtOpacity > 0.96 && !!yurtAsset?.userData.loadedModel;
   const canShowInteriorHotspots = revealTarget > 0.5 && yurtInsideView && !!yurtAsset?.userData.loadedModel;
-  setProjectedHotspot(
-    yurtShellHotspot,
-    yurtAsset?.userData.hotspotWorld || yurtCenterWorld,
-    canShowHotspots && !!yurtAsset?.userData.hotspotWorld
-  );
   if (yurtAsset?.userData.loadedModel) {
+    yurtAsset.updateMatrixWorld(true);
+    yurtShellHotspotWorld.copy(yurtShellHotspotLocal);
+    yurtAsset.userData.loadedModel.localToWorld(yurtShellHotspotWorld);
     yurtDoorHotspotWorld.copy(yurtDoorHotspotLocal);
     yurtAsset.userData.loadedModel.localToWorld(yurtDoorHotspotWorld);
   }
+  setProjectedHotspot(
+    yurtShellHotspot,
+    yurtShellHotspotWorld,
+    canShowHotspots && !!yurtAsset?.userData.loadedModel,
+    { x: 0.38, y: 0.48 }
+  );
   setProjectedHotspot(
     yurtDoorHotspot,
     yurtDoorHotspotWorld,
