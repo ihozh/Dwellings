@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.vite/
+
+# Local/editor files
+.DS_Store
+*.log
+.env
+.env.*
+
+# Large source assets not needed by the deployed website
+Blender/
+material/
+web_textures/
+output/
+3d-web/
+mongolian_yurt.glb
+split_pu23_stamps.py
+
+# Keep deployment-ready web assets under public/
