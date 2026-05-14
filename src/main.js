@@ -1505,7 +1505,11 @@ function animate() {
   if (yurtAsset) {
     yurtAsset.visible = current === 0 && revealTarget > 0.5;
     const yurtOpacity = Math.max(0, Math.min(1, (eased - 0.68) / 0.32));
-    const scale = THREE.MathUtils.lerp(0.55, 1, yurtOpacity);
+    const yurtStageRect = getCanvasMetrics();
+    const isPhoneYurtStage = yurtStageRect.width < 900 && yurtStageRect.height < 520;
+    const yurtCompactness = isPhoneYurtStage ? THREE.MathUtils.clamp((460 - yurtStageRect.height) / 180, 0, 1) : 0;
+    const yurtPhoneScale = isPhoneYurtStage ? THREE.MathUtils.lerp(1.22, 1.12, yurtCompactness) : 1;
+    const scale = THREE.MathUtils.lerp(0.55, 1, yurtOpacity) * yurtPhoneScale;
     yurtAsset.scale.copy(yurtAsset.userData.baseScale).multiplyScalar(scale);
     yurtAsset.position.copy(yurtAsset.userData.basePosition);
     yurtAsset.traverse((child) => {
